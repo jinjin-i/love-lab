@@ -57,24 +57,30 @@ export default function ResultPage() {
     }
 
     const answers = JSON.parse(sessionStorage.getItem('quiz_answers') || '[]')
-    if (!answers.length) { router.push('/'); return }
 
+    // 스트리밍 방식으로 결과 받기
     fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ quizType: type, answers }),
+    }).then(async res => {
+      if (!res.ok) { showToast('오류가 발생했어요'); setLoading(false); return }
+      const reader = res.body!.getReader()
+      const decoder = new TextDecoder()
+      let fullText = ''
+      setLoading(false) // 첫 글자 오기 전에 로딩 끄기
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        const chunk = decoder.decode(value)
+        fullText += chunk
+        setResultText(fullText) // 실시간으로 화면 업데이트
+      }
+      localStorage.setItem('free_result_date', new Date().toLocaleDateString('ko-KR'))
+    }).catch(() => {
+      showToast('오류가 발생했어요')
+      setLoading(false)
     })
-      .then(r => r.json())
-      .then(data => {
-        if (data.resultText) {
-          setResultText(data.resultText)
-          localStorage.setItem('free_result_date', new Date().toLocaleDateString('ko-KR'))
-        } else {
-          showToast('분석 중 오류가 발생했어요')
-        }
-      })
-      .catch(() => showToast('오류가 발생했어요'))
-      .finally(() => setLoading(false))
   }, [])
 
   function parseResult(raw: string) {
