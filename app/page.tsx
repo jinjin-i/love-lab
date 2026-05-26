@@ -1,0 +1,150 @@
+'use client'
+// app/page.tsx
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
+export default function Home() {
+  const router = useRouter()
+  const [savedDate, setSavedDate] = useState<string | null>(null)
+  const [phone, setPhone] = useState('')
+  const [checking, setChecking] = useState(false)
+  const [showPhoneModal, setShowPhoneModal] = useState(false)
+  const [toast, setToast] = useState('')
+
+  useEffect(() => {
+    // 이전 무료 분석 결과 날짜 표시
+    const date = localStorage.getItem('free_result_date')
+    if (date) setSavedDate(date)
+  }, [])
+
+  function showToast(msg: string) {
+    setToast(msg)
+    setTimeout(() => setToast(''), 2500)
+  }
+
+  async function checkPreviousResult() {
+    if (!phone || phone.replace(/[^0-9]/g, '').length < 10) {
+      showToast('올바른 전화번호를 입력해주세요')
+      return
+    }
+    setChecking(true)
+    try {
+      const res = await fetch('/api/check-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      })
+      const data = await res.json()
+      if (data.found) {
+        // 결과를 sessionStorage에 임시 저장 후 결과 페이지로
+        sessionStorage.setItem('result_text', data.resultText)
+        sessionStorage.setItem('result_type', 'ex')
+        sessionStorage.setItem('result_date', data.paidAt)
+        router.push('/result')
+      } else {
+        showToast('결제 내역을 찾을 수 없어요')
+      }
+    } catch {
+      showToast('오류가 발생했어요')
+    }
+    setChecking(false)
+  }
+
+  const menus = [
+    { type: 'attachment', icon: '🪞', title: '애착유형 진단', sub: '회피형 · 불안형 · 안정형의 뿌리', paid: false },
+    { type: 'pattern', icon: '🔁', title: '반복 연애 패턴 분석', sub: '왜 나는 항상 같은 유형을 만날까', paid: false },
+    { type: 'ideal', icon: '⚖️', title: '이상형 궁합 분석', sub: '내가 원하는 사람이 나에게 맞는가', paid: false },
+    { type: 'ex', icon: '🔮', title: '전 남자친구 관계 분석', sub: '이별의 진짜 원인과 다음 관계 통찰', paid: true },
+  ]
+
+  return (
+    <>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '56px 28px 140px', textAlign: 'center' }}>
+        <div style={{ fontSize: 15, color: '#c9a84c', letterSpacing: 10, marginBottom: 22 }}>✦ ✦ ✦</div>
+        <div style={{ border: '1px solid rgba(201,168,76,0.45)', borderRadius: 40, padding: '7px 24px', fontSize: 12.5, letterSpacing: '0.08em', color: 'rgba(240,234,216,0.7)', marginBottom: 28 }}>
+          연애심리연구소
+        </div>
+        <h1 style={{ fontFamily: 'Noto Serif KR, serif', fontSize: '2.05rem', fontWeight: 300, lineHeight: 1.3, marginBottom: 48 }}>
+          당신의 연애를<br />
+          <em style={{ display: 'block', fontStyle: 'italic', color: '#c9a84c' }}>읽어드립니다</em>
+        </h1>
+
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {menus.map(m => (
+            <button
+              key={m.type}
+              onClick={() => router.push(`/quiz/${m.type}`)}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: 14,
+                padding: '16px 20px',
+                background: 'rgba(255,255,255,0.055)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 16, cursor: 'pointer', textAlign: 'left',
+                fontFamily: 'inherit', transition: 'background 0.18s',
+                color: '#f0ead8',
+              }}
+            >
+              <span style={{ fontSize: 22, flexShrink: 0 }}>{m.icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 2 }}>{m.title}</div>
+                <div style={{ fontSize: 11.5, color: 'rgba(240,234,216,0.4)', fontWeight: 300 }}>{m.sub}</div>
+              </div>
+              <span style={{ fontSize: 18, color: 'rgba(240,234,216,0.25)' }}>›</span>
+            </button>
+          ))}
+
+          {/* 이전 결과 조회 */}
+          <div style={{ marginTop: 8, width: '100%' }}>
+            {!showPhoneModal ? (
+              <button
+                onClick={() => setShowPhoneModal(true)}
+                style={{
+                  width: '100%', padding: '13px 20px',
+                  background: 'rgba(201,168,76,0.06)',
+                  border: '1px solid rgba(201,168,76,0.2)',
+                  borderRadius: 14, cursor: 'pointer',
+                  fontSize: 13, color: 'rgba(201,168,76,0.7)',
+                  fontFamily: 'inherit', textAlign: 'center',
+                }}
+              >
+                🔮 이전 분석 결과 다시 보기
+              </button>
+            ) : (
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(201,168,76,0.25)',
+                borderRadius: 16, padding: '16px 20px',
+                display: 'flex', flexDirection: 'column', gap: 10,
+              }}>
+                <div style={{ fontSize: 12.5, color: 'rgba(240,234,216,0.5)', textAlign: 'center' }}>
+                  결제 시 입력한 전화번호를 입력해주세요
+                </div>
+                <input
+                  className="phone-input"
+                  type="tel"
+                  placeholder="010-0000-0000"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                />
+                <button className="btn-gold" style={{ height: 48, fontSize: 14 }} onClick={checkPreviousResult} disabled={checking}>
+                  {checking ? '조회 중...' : '결과 조회하기'}
+                </button>
+                <button className="btn-ghost" style={{ height: 40, fontSize: 13 }} onClick={() => setShowPhoneModal(false)}>
+                  닫기
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: '1.5rem 1.75rem 2rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <p style={{ fontSize: 11, color: 'rgba(240,234,216,0.25)', lineHeight: 1.8, fontWeight: 300 }}>
+          심리학 기반 분석 · 결과는 전문 상담을 대체하지 않습니다
+        </p>
+      </div>
+
+      <div className={`toast ${toast ? 'on' : ''}`}>{toast}</div>
+    </>
+  )
+}
