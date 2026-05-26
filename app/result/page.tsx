@@ -1,6 +1,7 @@
 'use client'
 // app/result/page.tsx
 import { useRouter } from 'next/navigation'
+import html2canvas from 'html2canvas'
 import { useState, useEffect } from 'react'
 import { QUIZZES, QuizType } from '@/lib/quizData'
 
@@ -26,6 +27,40 @@ export default function ResultPage() {
   function showToast(msg: string) {
     setToast(msg)
     setTimeout(() => setToast(''), 2500)
+  }
+
+  async function captureAndShare() {
+    const el = document.getElementById('result-capture-area')
+    if (!el) return
+    showToast('이미지 생성 중...')
+    try {
+      const canvas = await html2canvas(el, {
+        backgroundColor: '#141428',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      })
+      const image = canvas.toDataURL('image/png')
+
+      // 모바일에서는 공유 API 사용
+      if (navigator.share) {
+        const blob = await (await fetch(image)).blob()
+        const file = new File([blob], 'love-lab-result.png', { type: 'image/png' })
+        await navigator.share({
+          title: '연애심리연구소 분석 결과',
+          files: [file],
+        })
+      } else {
+        // PC에서는 다운로드
+        const link = document.createElement('a')
+        link.download = 'love-lab-result.png'
+        link.href = image
+        link.click()
+        showToast('이미지가 저장됐어요!')
+      }
+    } catch (e: any) {
+      if (e.name !== 'AbortError') showToast('저장 중 오류가 발생했어요')
+    }
   }
 
   // 카카오 SDK 로드
@@ -173,6 +208,7 @@ export default function ResultPage() {
 
       {/* 결과 본문 */}
       <div style={{ flex: 1, padding: '28px 24px 5rem', overflowY: 'auto' }}>
+        <div id="result-capture-area" style={{ background: '#141428', padding: '8px 0' }}>
         {loading ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 0', gap: 20 }}>
             <div className="spinner" />
@@ -194,11 +230,11 @@ export default function ResultPage() {
               </div>
             ))}
 
-            {/* 카카오 공유 배너 */}
+            {/* 공유 버튼 영역 */}
             <div style={{
               marginTop: 32,
-              background: 'rgba(254,229,0,0.07)',
-              border: '1px solid rgba(254,229,0,0.2)',
+              background: 'rgba(201,168,76,0.07)',
+              border: '1px solid rgba(201,168,76,0.2)',
               borderRadius: 16,
               padding: '18px 20px',
               textAlign: 'center',
@@ -208,34 +244,36 @@ export default function ResultPage() {
                 <span style={{ color: 'rgba(240,234,216,0.7)' }}>친구에게 공유하고 같이 분석해봐요 🔮</span>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
+                {/* 이미지로 저장/공유 */}
                 <button
-                  onClick={shareKakao}
+                  onClick={captureAndShare}
                   style={{
                     flex: 1, height: 46,
-                    background: '#FEE500', border: 'none', borderRadius: 12,
+                    background: 'linear-gradient(135deg, #b8922e, #e8c96a)',
+                    border: 'none', borderRadius: 12,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                    fontSize: 14, fontWeight: 700, color: '#3C1E1E',
+                    fontSize: 14, fontWeight: 700, color: '#1a1410',
                     cursor: 'pointer', fontFamily: 'inherit',
                   }}
                 >
-                  <KakaoIcon size={18} /> 카카오톡 공유
+                  📸 결과 이미지로 공유
                 </button>
+                {/* 카카오톡 공유 */}
                 <button
-                  onClick={copyLink}
+                  onClick={shareKakao}
                   style={{
                     width: 46, height: 46,
-                    background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: 12,
+                    background: '#FEE500', border: 'none', borderRadius: 12,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', fontSize: 18,
+                    cursor: 'pointer',
                   }}
-                  title="링크 복사"
+                  title="카카오톡 공유"
                 >
-                  🔗
+                  <KakaoIcon size={20} />
                 </button>
               </div>
             </div>
+          </div>{/* end result-capture-area */}
           </div>
         )}
       </div>
