@@ -89,6 +89,15 @@ export default function Home() {
         <p style={{ fontSize: 11, color: 'rgba(240,234,216,0.25)', lineHeight: 1.8, fontWeight: 300 }}>
           심리학 기반 분석 · 결과는 전문 상담을 대체하지 않습니다
         </p>
+        <div style={{ marginTop: 12, display: 'flex', justifyContent: 'center' }}>
+          <span style={{
+            fontSize: 9.5, letterSpacing: '0.2em',
+            color: 'rgba(201,168,76,0.5)',
+            border: '1px solid rgba(201,168,76,0.25)',
+            borderRadius: 20, padding: '4px 14px',
+            fontWeight: 500,
+          }}>JINJIN COLLECTIVE</span>
+        </div>
       </div>
 
       <div className={`toast ${toast ? 'on' : ''}`}>{toast}</div>
