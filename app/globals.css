@@ -24,11 +24,16 @@ body {
 }
 
 .app {
-  max-width: 430px;
+  max-width: 600px;
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
   background: #141428;
+}
+
+@media (min-width: 768px) {
+  body { font-size: 17px; }
+  .app { box-shadow: 0 0 60px rgba(0,0,0,0.5); }
 }
 
 /* 골드 버튼 공통 */
@@ -194,8 +199,8 @@ body {
 .rs-sep { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .rs-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
 .rs-sep-line { flex: 1; height: 0.5px; background: rgba(201,168,76,0.2); }
-.rs-title { font-size: 1.05rem; font-weight: 500; color: var(--text); margin-bottom: 8px; }
-.rs-body { font-size: 13.5px; line-height: 1.9; color: var(--text2); white-space: pre-wrap; font-weight: 300; }
+.rs-title { font-size: 1.15rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.rs-body { font-size: 15px; line-height: 1.9; color: rgba(240,234,216,0.85); white-space: pre-wrap; font-weight: 300; }
 
 @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 .fade-up { animation: fadeUp 0.32s ease; }
