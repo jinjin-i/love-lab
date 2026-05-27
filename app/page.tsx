@@ -39,6 +39,7 @@ export default function Home() {
           fontSize: 52,
           animation: 'float 3.5s ease-in-out infinite',
           marginBottom: 8,
+          marginTop: -10,
           filter: 'drop-shadow(0 0 20px rgba(201,168,76,0.25))',
           textAlign: 'center',
         }}>🔮</div>
