@@ -64,7 +64,7 @@ export default function Home() {
       </div>
 
             {/* 후기 섹션 */}
-      <div style={{ padding: '2rem 1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div style={{ padding: '1.25rem 1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', textAlign: 'center', marginBottom: '1.25rem' }}>✦ 분석 후기</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
