@@ -35,6 +35,14 @@ export default function Home() {
           <em style={{ display: 'block', fontStyle: 'italic', color: '#c9a84c' }}>읽어드립니다</em>
         </h1>
 
+        <div style={{
+          fontSize: 52,
+          animation: 'float 3.5s ease-in-out infinite',
+          marginBottom: 8,
+          filter: 'drop-shadow(0 0 20px rgba(201,168,76,0.25))',
+          textAlign: 'center',
+        }}>🔮</div>
+
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
           {menus.map(m => (
             <button
