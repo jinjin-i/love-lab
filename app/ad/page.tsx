@@ -1,15 +1,12 @@
 'use client'
-// app/ad/page.tsx - 쿠팡파트너스 배너 광고 보고 결과 보기
 import { useRouter } from 'next/navigation'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function AdPage() {
   const router = useRouter()
   const [countdown, setCountdown] = useState(5)
   const [canSkip, setCanSkip] = useState(false)
-  const adRef = useRef<HTMLDivElement>(null)
 
-  // 카운트다운
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown(prev => {
@@ -20,39 +17,53 @@ export default function AdPage() {
     return () => clearInterval(timer)
   }, [])
 
-  // 쿠팡파트너스 배너 스크립트 동적 삽입
   useEffect(() => {
-    if (!adRef.current) return
+    // 쿠팡파트너스 스크립트 삽입
+    const container = document.getElementById('coupang-ad')
+    if (!container) return
 
-    // 기존 스크립트 제거
-    const oldScript = document.getElementById('coupang-script')
-    if (oldScript) oldScript.remove()
+    // iframe으로 감싸서 스크립트 실행
+    const iframe = document.createElement('iframe')
+    iframe.style.width = '100%'
+    iframe.style.height = '320px'
+    iframe.style.border = 'none'
+    iframe.style.borderRadius = '12px'
+    iframe.style.background = 'transparent'
+    iframe.scrolling = 'no'
+    container.appendChild(iframe)
 
-    // 스크립트 로드
-    const script = document.createElement('script')
-    script.id = 'coupang-script'
-    script.src = 'https://ads-partners.coupang.com/g.js'
-    script.async = true
-    script.onload = () => {
-      // 스크립트 로드 후 광고 초기화
-      const initScript = document.createElement('script')
-      initScript.textContent = `
-        new PartnersCoupang.G({
-          "id": 739808,
-          "trackingCode": "AF6132783",
-          "subId": null,
-          "template": "carousel",
-          "width": "300",
-          "height": "300"
-        });
-      `
-      adRef.current?.appendChild(initScript)
-    }
-    document.head.appendChild(script)
+    const doc = iframe.contentDocument || iframe.contentWindow?.document
+    if (!doc) return
+
+    doc.open()
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          body { margin: 0; padding: 0; background: transparent; display: flex; justify-content: center; }
+        </style>
+      </head>
+      <body>
+        <script src="https://ads-partners.coupang.com/g.js"><\/script>
+        <script>
+          new PartnersCoupang.G({
+            "id": 739808,
+            "trackingCode": "AF6132783",
+            "subId": null,
+            "template": "carousel",
+            "width": "300",
+            "height": "300"
+          });
+        <\/script>
+      </body>
+      </html>
+    `)
+    doc.close()
 
     return () => {
-      const s = document.getElementById('coupang-script')
-      if (s) s.remove()
+      if (container.contains(iframe)) container.removeChild(iframe)
     }
   }, [])
 
@@ -80,8 +91,7 @@ export default function AdPage() {
 
       <div style={{
         flex: 1, display: 'flex', flexDirection: 'column',
-        alignItems: 'center', padding: '32px 24px 160px',
-        gap: 20, textAlign: 'center'
+        alignItems: 'center', padding: '28px 24px 160px', gap: 20, textAlign: 'center'
       }}>
 
         {/* 수정구슬 */}
@@ -103,16 +113,13 @@ export default function AdPage() {
           </h2>
         </div>
 
-        {/* 쿠팡파트너스 배너 광고 */}
+        {/* 쿠팡파트너스 광고 */}
         <div style={{
           width: '100%',
           display: 'flex', justifyContent: 'center',
-          background: 'rgba(255,255,255,0.03)',
-          border: '1px solid rgba(255,255,255,0.06)',
-          borderRadius: 16, padding: '16px',
           minHeight: 320,
         }}>
-          <div ref={adRef} id="coupang-ad-container" />
+          <div id="coupang-ad" style={{ width: '100%' }} />
         </div>
 
         <div style={{ fontSize: 11, color: 'rgba(240,234,216,0.2)', lineHeight: 1.6 }}>
