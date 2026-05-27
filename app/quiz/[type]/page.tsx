@@ -72,15 +72,12 @@ export default function QuizPage() {
       setStep(step + 1)
       window.scrollTo(0, 0)
     } else {
-      // 마지막 — 유료면 결제 페이지로, 무료면 분석
+      sessionStorage.setItem('quiz_answers', JSON.stringify(ans))
+      sessionStorage.setItem('quiz_type', type)
+      // ex 타입은 광고 페이지로, 나머지는 바로 결과로
       if (quiz.paid) {
-        // answers를 sessionStorage에 저장 후 결제 페이지로
-        sessionStorage.setItem('quiz_answers', JSON.stringify(ans))
-        sessionStorage.setItem('quiz_type', type)
-        router.push('/pay')
+        router.push('/ad')
       } else {
-        sessionStorage.setItem('quiz_answers', JSON.stringify(ans))
-        sessionStorage.setItem('quiz_type', type)
         router.push('/result')
       }
     }
