@@ -5,50 +5,16 @@ import { useState, useEffect } from 'react'
 
 export default function Home() {
   const router = useRouter()
-  const [savedDate, setSavedDate] = useState<string | null>(null)
-  const [phone, setPhone] = useState('')
-  const [checking, setChecking] = useState(false)
-  const [showPhoneModal, setShowPhoneModal] = useState(false)
   const [toast, setToast] = useState('')
 
-  useEffect(() => {
-    // 이전 무료 분석 결과 날짜 표시
-    const date = localStorage.getItem('free_result_date')
-    if (date) setSavedDate(date)
-  }, [])
+
 
   function showToast(msg: string) {
     setToast(msg)
     setTimeout(() => setToast(''), 2500)
   }
 
-  async function checkPreviousResult() {
-    if (!phone || phone.replace(/[^0-9]/g, '').length < 10) {
-      showToast('올바른 전화번호를 입력해주세요')
-      return
-    }
-    setChecking(true)
-    try {
-      const res = await fetch('/api/check-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone }),
-      })
-      const data = await res.json()
-      if (data.found) {
-        // 결과를 sessionStorage에 임시 저장 후 결과 페이지로
-        sessionStorage.setItem('result_text', data.resultText)
-        sessionStorage.setItem('result_type', 'ex')
-        sessionStorage.setItem('result_date', data.paidAt)
-        router.push('/result')
-      } else {
-        showToast('결제 내역을 찾을 수 없어요')
-      }
-    } catch {
-      showToast('오류가 발생했어요')
-    }
-    setChecking(false)
-  }
+
 
   const menus = [
     { type: 'attachment', icon: '🪞', title: '애착유형 진단', sub: '회피형 · 불안형 · 안정형의 뿌리', paid: false },
@@ -93,48 +59,7 @@ export default function Home() {
             </button>
           ))}
 
-          {/* 이전 결과 조회 */}
-          <div style={{ marginTop: 8, width: '100%' }}>
-            {!showPhoneModal ? (
-              <button
-                onClick={() => setShowPhoneModal(true)}
-                style={{
-                  width: '100%', padding: '13px 20px',
-                  background: 'rgba(201,168,76,0.06)',
-                  border: '1px solid rgba(201,168,76,0.2)',
-                  borderRadius: 14, cursor: 'pointer',
-                  fontSize: 13, color: 'rgba(201,168,76,0.7)',
-                  fontFamily: 'inherit', textAlign: 'center',
-                }}
-              >
-                🔮 이전 분석 결과 다시 보기
-              </button>
-            ) : (
-              <div style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(201,168,76,0.25)',
-                borderRadius: 16, padding: '16px 20px',
-                display: 'flex', flexDirection: 'column', gap: 10,
-              }}>
-                <div style={{ fontSize: 12.5, color: 'rgba(240,234,216,0.5)', textAlign: 'center' }}>
-                  결제 시 입력한 전화번호를 입력해주세요
-                </div>
-                <input
-                  className="phone-input"
-                  type="tel"
-                  placeholder="010-0000-0000"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                />
-                <button className="btn-gold" style={{ height: 48, fontSize: 14 }} onClick={checkPreviousResult} disabled={checking}>
-                  {checking ? '조회 중...' : '결과 조회하기'}
-                </button>
-                <button className="btn-ghost" style={{ height: 40, fontSize: 13 }} onClick={() => setShowPhoneModal(false)}>
-                  닫기
-                </button>
-              </div>
-            )}
-          </div>
+
         </div>
       </div>
 
