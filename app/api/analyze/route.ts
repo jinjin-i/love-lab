@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const { quizType, answers } = await req.json()
     const quiz = QUIZZES[quizType as QuizType]
 
-    if (!quiz || quiz.paid) {
+    if (!quiz) {
       return new Response(JSON.stringify({ error: '잘못된 요청입니다' }), { status: 400 })
     }
 
