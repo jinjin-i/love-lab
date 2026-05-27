@@ -63,7 +63,29 @@ export default function Home() {
         </div>
       </div>
 
-      <div style={{ padding: '1.5rem 1.75rem 2rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            {/* 후기 섹션 */}
+      <div style={{ padding: '2rem 1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', textAlign: 'center', marginBottom: '1.25rem' }}>✦ 분석 후기</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {[
+            { emoji: '🪞', type: '애착유형 진단', name: '지은님', date: '5일 전', text: '불안형이라는 걸 알고는 있었는데 이렇게 정확하게 짚어줄 줄은 몰랐어요. 왜 항상 연락을 확인하게 되는지 이유를 알 것 같아서 눈물이 났어요.' },
+            { emoji: '🔮', type: '전 애인 관계 분석', name: '수연님', date: '2일 전', text: '전 애인이 회피-냉각형이라고 딱 정의해주는데 소름돋았어요. 내가 왜 그 사람한테 집착했는지 이제야 이해가 돼요.' },
+            { emoji: '🔁', type: '반복 연애 패턴', name: '하린님', date: '1주 전', text: '항상 차가운 사람한테 끌리는 이유를 드디어 알았어요. 구조자 패턴이래요. 읽으면서 내 얘기 같아서 캡처해서 친구한테 보냈어요 ㅋㅋ' },
+            { emoji: '⚖️', type: '이상형 궁합 분석', name: '민서님', date: '3일 전', text: '이상형이랑 나랑 실제로 잘 맞는지 현실적으로 분석해줘서 좋았어요. 막연하게 생각했던 걸 정리해주는 느낌?' },
+          ].map((r, i) => (
+            <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 14 }}>{r.emoji}</span>
+                <span style={{ fontSize: 11, color: 'rgba(201,168,76,0.7)', fontWeight: 500 }}>{r.type}</span>
+                <span style={{ marginLeft: 'auto', fontSize: 10.5, color: 'rgba(240,234,216,0.25)' }}>{r.date}</span>
+              </div>
+              <p style={{ fontSize: 13, color: 'rgba(240,234,216,0.65)', lineHeight: 1.7, fontWeight: 300, marginBottom: 8 }}>"{r.text}"</p>
+              <div style={{ fontSize: 11, color: 'rgba(240,234,216,0.3)' }}>— {r.name}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ padding: '1.5rem 1.75rem 2rem', textAlign: 'center' }}>
         <p style={{ fontSize: 11, color: 'rgba(240,234,216,0.25)', lineHeight: 1.8, fontWeight: 300 }}>
           심리학 기반 분석 · 결과는 전문 상담을 대체하지 않습니다
         </p>
