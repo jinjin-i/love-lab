@@ -30,6 +30,7 @@ export default function ResultPage() {
     }
 
     const answers = JSON.parse(sessionStorage.getItem('quiz_answers') || '[]')
+    console.log('quiz_type:', type, 'answers:', answers)
 
     fetch('/api/analyze', {
       method: 'POST',

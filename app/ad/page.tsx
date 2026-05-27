@@ -51,7 +51,7 @@ export default function AdPage() {
       <div style={{ padding: '20px 24px 0', display: 'flex', alignItems: 'center', gap: 14 }}>
         <button onClick={() => router.push('/')} style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', background: 'none', color: 'rgba(240,234,216,0.5)', fontSize: 21, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>‹</button>
         <div>
-          <div style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 2 }}>전 남자친구 관계 분석</div>
+          <div style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 2 }}>전 애인 관계 분석</div>
           <div style={{ fontSize: 12.5, color: 'rgba(240,234,216,0.5)', fontWeight: 300 }}>분석 결과 준비 완료</div>
         </div>
       </div>
