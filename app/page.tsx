@@ -1,53 +1,15 @@
 'use client'
 // app/page.tsx
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function Home() {
   const router = useRouter()
-  const [savedDate, setSavedDate] = useState<string | null>(null)
-  const [phone, setPhone] = useState('')
-  const [checking, setChecking] = useState(false)
-  const [showPhoneModal, setShowPhoneModal] = useState(false)
   const [toast, setToast] = useState('')
-
-  useEffect(() => {
-    // 이전 무료 분석 결과 날짜 표시
-    const date = localStorage.getItem('free_result_date')
-    if (date) setSavedDate(date)
-  }, [])
 
   function showToast(msg: string) {
     setToast(msg)
     setTimeout(() => setToast(''), 2500)
-  }
-
-  async function checkPreviousResult() {
-    if (!phone || phone.replace(/[^0-9]/g, '').length < 10) {
-      showToast('올바른 전화번호를 입력해주세요')
-      return
-    }
-    setChecking(true)
-    try {
-      const res = await fetch('/api/check-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone }),
-      })
-      const data = await res.json()
-      if (data.found) {
-        // 결과를 sessionStorage에 임시 저장 후 결과 페이지로
-        sessionStorage.setItem('result_text', data.resultText)
-        sessionStorage.setItem('result_type', 'ex')
-        sessionStorage.setItem('result_date', data.paidAt)
-        router.push('/result')
-      } else {
-        showToast('결제 내역을 찾을 수 없어요')
-      }
-    } catch {
-      showToast('오류가 발생했어요')
-    }
-    setChecking(false)
   }
 
   const menus = [
@@ -59,20 +21,34 @@ export default function Home() {
     { type: 'couple', icon: '💑', title: '커플 관계 진단', sub: '우리 관계 지금 괜찮을까?', paid: false },
   ]
 
+  const reviews = [
+    { emoji: '🪞', type: '애착유형 진단', name: '진님', date: '5일 전', text: '불안형이라는 걸 알고는 있었는데 이렇게 정확하게 짚어줄 줄은 몰랐어요. 왜 항상 연락을 확인하게 되는지 이유를 알 것 같아서 눈물이 났어요.' },
+    { emoji: '🔮', type: '전 애인 관계 분석', name: '수연님', date: '2일 전', text: '전 애인이 회피-냉각형이라고 딱 정의해주는데 소름돋았어요. 내가 왜 그 사람한테 집착했는지 이제야 이해가 돼요.' },
+    { emoji: '💌', type: '짝사랑 상대 심리 분석', name: '하은님', date: '3일 전', text: '그 사람이 나를 좋아하는지 너무 궁금했는데 분석 보고 용기 내서 고백했어요. 결과는 비밀 ㅋㅋ' },
+    { emoji: '💑', type: '커플 관계 진단', name: '민서님', date: '1주 전', text: '남자친구랑 같이 해봤어요. 우리 관계 패턴을 이렇게 정확하게 짚어줄 줄은 몰랐어요. 대화 많이 했어요.' },
+  ]
+
   return (
     <>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '56px 28px 140px', textAlign: 'center' }}>
-        <div style={{ fontSize: 15, color: '#c9a84c', letterSpacing: 10, marginBottom: 22 }}>✦ ✦ ✦</div>
-        <div style={{ fontSize: 12, color: 'rgba(240,234,216,0.45)', marginBottom: 8 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '56px 28px 40px', textAlign: 'center' }}>
+        <div style={{ fontSize: 15, color: '#c9a84c', letterSpacing: 10, marginBottom: 16 }}>✦ ✦ ✦</div>
+        <div style={{ fontSize: 12, color: 'rgba(240,234,216,0.45)', marginBottom: 20 }}>
           🔮 지금까지 <span style={{ color: '#c9a84c', fontWeight: 600 }}>1,247명</span>이 분석했어요
         </div>
-        <div style={{ border: '1px solid rgba(201,168,76,0.45)', borderRadius: 40, padding: '7px 24px', fontSize: 12.5, letterSpacing: '0.08em', color: 'rgba(240,234,216,0.7)', marginBottom: 28 }}>
-          연애심리연구소
-        </div>
-        <h1 style={{ fontFamily: 'Noto Serif KR, serif', fontSize: '2.05rem', fontWeight: 300, lineHeight: 1.3, marginBottom: 48 }}>
+
+        <h1 style={{ fontFamily: 'Noto Serif KR, serif', fontSize: '2.05rem', fontWeight: 300, lineHeight: 1.3, marginBottom: 8 }}>
           당신의 연애를<br />
           <em style={{ display: 'block', fontStyle: 'italic', color: '#c9a84c' }}>읽어드립니다</em>
         </h1>
+
+        <div style={{
+          fontSize: 52,
+          animation: 'float 3.5s ease-in-out infinite',
+          marginBottom: 8,
+          marginTop: -10,
+          filter: 'drop-shadow(0 0 20px rgba(201,168,76,0.25))',
+          textAlign: 'center',
+        }}>🔮</div>
 
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
           {menus.map(m => (
@@ -97,164 +73,14 @@ export default function Home() {
               <span style={{ fontSize: 18, color: 'rgba(240,234,216,0.25)' }}>›</span>
             </button>
           ))}
-
-          {/* 이전 결과 조회 */}
-          <div style={{ marginTop: 8, width: '100%' }}>
-            '
-// app/page.tsx
-import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
-
-export default function Home() {
-  const router = useRouter()
-  const [savedDate, setSavedDate] = useState<string | null>(null)
-  const [phone, setPhone] = useState('')
-  const [checking, setChecking] = useState(false)
-  const [showPhoneModal, setShowPhoneModal] = useState(false)
-  const [toast, setToast] = useState('')
-
-  useEffect(() => {
-    // 이전 무료 분석 결과 날짜 표시
-    const date = localStorage.getItem('free_result_date')
-    if (date) setSavedDate(date)
-  }, [])
-
-  function showToast(msg: string) {
-    setToast(msg)
-    setTimeout(() => setToast(''), 2500)
-  }
-
-  async function checkPreviousResult() {
-    if (!phone || phone.replace(/[^0-9]/g, '').length < 10) {
-      showToast('올바른 전화번호를 입력해주세요')
-      return
-    }
-    setChecking(true)
-    try {
-      const res = await fetch('/api/check-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone }),
-      })
-      const data = await res.json()
-      if (data.found) {
-        // 결과를 sessionStorage에 임시 저장 후 결과 페이지로
-        sessionStorage.setItem('result_text', data.resultText)
-        sessionStorage.setItem('result_type', 'ex')
-        sessionStorage.setItem('result_date', data.paidAt)
-        router.push('/result')
-      } else {
-        showToast('결제 내역을 찾을 수 없어요')
-      }
-    } catch {
-      showToast('오류가 발생했어요')
-    }
-    setChecking(false)
-  }
-
-  const menus = [
-    { type: 'attachment', icon: '🪞', title: '애착유형 진단', sub: '회피형 · 불안형 · 안정형의 뿌리', paid: false },
-    { type: 'pattern', icon: '🔁', title: '반복 연애 패턴 분석', sub: '왜 나는 항상 같은 유형을 만날까', paid: false },
-    { type: 'ideal', icon: '⚖️', title: '이상형 궁합 분석', sub: '내가 원하는 사람이 나에게 맞는가', paid: false },
-    { type: 'ex', icon: '🔮', title: '전 애인 관계 분석', sub: '이별의 진짜 원인과 다음 관계 통찰', paid: true },
-    { type: 'crush', icon: '💌', title: '짝사랑 상대 심리 분석', sub: '그 사람 나를 좋아할까?', paid: false },
-    { type: 'couple', icon: '💑', title: '커플 관계 진단', sub: '우리 관계 지금 괜찮을까?', paid: false },
-  ]
-
-  return (
-    <>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '56px 28px 140px', textAlign: 'center' }}>
-        <div style={{ fontSize: 15, color: '#c9a84c', letterSpacing: 10, marginBottom: 22 }}>✦ ✦ ✦</div>
-        <div style={{ fontSize: 12, color: 'rgba(240,234,216,0.45)', marginBottom: 8 }}>
-          🔮 지금까지 <span style={{ color: '#c9a84c', fontWeight: 600 }}>1,247명</span>이 분석했어요
-        </div>
-        <div style={{ border: '1px solid rgba(201,168,76,0.45)', borderRadius: 40, padding: '7px 24px', fontSize: 12.5, letterSpacing: '0.08em', color: 'rgba(240,234,216,0.7)', marginBottom: 28 }}>
-          연애심리연구소
-        </div>
-        <h1 style={{ fontFamily: 'Noto Serif KR, serif', fontSize: '2.05rem', fontWeight: 300, lineHeight: 1.3, marginBottom: 48 }}>
-          당신의 연애를<br />
-          <em style={{ display: 'block', fontStyle: 'italic', color: '#c9a84c' }}>읽어드립니다</em>
-        </h1>
-
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {menus.map(m => (
-            <button
-              key={m.type}
-              onClick={() => router.push(`/quiz/${m.type}`)}
-              style={{
-                width: '100%', display: 'flex', alignItems: 'center', gap: 14,
-                padding: '16px 20px',
-                background: 'rgba(255,255,255,0.055)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: 16, cursor: 'pointer', textAlign: 'left',
-                fontFamily: 'inherit', transition: 'background 0.18s',
-                color: '#f0ead8',
-              }}
-            >
-              <span style={{ fontSize: 22, flexShrink: 0 }}>{m.icon}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 2 }}>{m.title}</div>
-                <div style={{ fontSize: 11.5, color: 'rgba(240,234,216,0.4)', fontWeight: 300 }}>{m.sub}</div>
-              </div>
-              <span style={{ fontSize: 18, color: 'rgba(240,234,216,0.25)' }}>›</span>
-            </button>
-          ))}
-
-          {/* 이전 결과 조회 */}
-          <div style={{ marginTop: 8, width: '100%' }}>
-            {!showPhoneModal ? (
-              <button
-                onClick={() => setShowPhoneModal(true)}
-                style={{
-                  width: '100%', padding: '13px 20px',
-                  background: 'rgba(201,168,76,0.06)',
-                  border: '1px solid rgba(201,168,76,0.2)',
-                  borderRadius: 14, cursor: 'pointer',
-                  fontSize: 13, color: 'rgba(201,168,76,0.7)',
-                  fontFamily: 'inherit', textAlign: 'center',
-                }}
-              >
-                🔮 이전 분석 결과 다시 보기
-              </button>
-            ) : (
-              <div style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(201,168,76,0.25)',
-                borderRadius: 16, padding: '16px 20px',
-                display: 'flex', flexDirection: 'column', gap: 10,
-              }}>
-                <div style={{ fontSize: 12.5, color: 'rgba(240,234,216,0.5)', textAlign: 'center' }}>
-                  결제 시 입력한 전화번호를 입력해주세요
-                </div>
-                <input
-                  className="phone-input"
-                  type="tel"
-                  placeholder="010-0000-0000"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                />
-                <button className="btn-gold" style={{ height: 48, fontSize: 14 }} onClick={checkPreviousResult} disabled={checking}>
-                  {checking ? '조회 중...' : '결과 조회하기'}
-                </button>
-                <button className="btn-ghost" style={{ height: 40, fontSize: 13 }} onClick={() => setShowPhoneModal(false)}>
-                  닫기
-                </button>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
       {/* 후기 섹션 */}
-      <div style={{ padding: '1.5rem 1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div style={{ padding: '1.25rem 1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', textAlign: 'center', marginBottom: '1.25rem' }}>✦ 분석 후기</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {[
-            { emoji: '🪞', type: '애착유형 진단', name: '진님', date: '5일 전', text: '불안형이라는 걸 알고는 있었는데 이렇게 정확하게 짚어줄 줄은 몰랐어요. 왜 항상 연락을 확인하게 되는지 이유를 알 것 같아서 눈물이 났어요.' },
-            { emoji: '🔮', type: '전 애인 관계 분석', name: '수연님', date: '2일 전', text: '전 애인이 회피-냉각형이라고 딱 정의해주는데 소름돋았어요. 내가 왜 그 사람한테 집착했는지 이제야 이해가 돼요.' },
-            { emoji: '💌', type: '짝사랑 상대 심리 분석', name: '하은님', date: '3일 전', text: '그 사람이 나를 좋아하는지 너무 궁금했는데 분석 보고 용기 내서 고백했어요. 결과는 비밀 ㅋㅋ' },
-            { emoji: '💑', type: '커플 관계 진단', name: '민서님', date: '1주 전', text: '남자친구랑 같이 해봤어요. 우리 관계 패턴을 이렇게 정확하게 짚어줄 줄은 몰랐어요. 대화 많이 했어요.' },
-          ].map((r, i) => (
+          {reviews.map((r, i) => (
             <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                 <span style={{ fontSize: 14 }}>{r.emoji}</span>
