@@ -8,7 +8,7 @@ import html2canvas from 'html2canvas'
 export default function ResultPage() {
   const router = useRouter()
   const [resultText, setResultText] = useState('')
-  const [quizType, setQuizType] = useState<QuizType>('attachment')
+  const [quizType, setQuizType] = useState<string>('attachment')
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState('')
   const captureRef = useRef<HTMLDivElement>(null)
