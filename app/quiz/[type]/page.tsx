@@ -74,11 +74,17 @@ export default function QuizPage() {
     } else {
       sessionStorage.setItem('quiz_answers', JSON.stringify(ans))
       sessionStorage.setItem('quiz_type', type)
-      // ex 타입은 광고 페이지로, 나머지는 바로 결과로
-      if (quiz.paid) {
-        router.push('/ad')
-      } else {
+      // 24시간 이내 분석 기록 확인
+      const lastAdTime = localStorage.getItem('last_ad_time')
+      const now = Date.now()
+      const twentyFourHours = 24 * 60 * 60 * 1000
+      const skipAd = lastAdTime && (now - parseInt(lastAdTime)) < twentyFourHours
+
+      if (skipAd) {
         router.push('/result')
+      } else {
+        localStorage.setItem('last_ad_time', String(now))
+        router.push('/ad')
       }
     }
   }
