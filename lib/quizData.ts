@@ -18,7 +18,7 @@ export interface Quiz {
   prompt: (answers: string[]) => string
 }
 
-export const QUIZZES: Record<QuizType, Quiz> = {
+export const QUIZZES: Record<string, Quiz> = {
   attachment: {
     cat: '애착유형 진단', name: '연애 애착유형 진단', paid: false,
     qs: [
