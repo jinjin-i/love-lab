@@ -7,8 +7,8 @@ import { QUIZZES, QuizType } from '@/lib/quizData'
 export default function QuizPage() {
   const params = useParams()
   const router = useRouter()
-  const type = params.type as QuizType
-  const quiz = QUIZZES[type]
+  const type = params.type as string
+  const quiz = QUIZZES[type as string]
 
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])

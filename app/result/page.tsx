@@ -19,7 +19,7 @@ export default function ResultPage() {
   }
 
   useEffect(() => {
-    const type = (sessionStorage.getItem('quiz_type') || 'attachment') as QuizType
+    const type = (sessionStorage.getItem('quiz_type') || 'attachment') as string
     const stored = sessionStorage.getItem('result_text')
     setQuizType(type)
 
@@ -102,7 +102,7 @@ export default function ResultPage() {
     }
   }
 
-  const quiz = QUIZZES[quizType]
+  const quiz = QUIZZES[quizType as string]
   const sections = parseResult(resultText)
 
   return (
