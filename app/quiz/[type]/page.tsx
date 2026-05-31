@@ -2,13 +2,13 @@
 // app/quiz/[type]/page.tsx
 import { useParams, useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
-import { QUIZZES, QuizType } from '@/lib/quizData'
+import { QUIZZES } from '@/lib/quizData'
 
 export default function QuizPage() {
   const params = useParams()
   const router = useRouter()
   const type = params.type as string
-  const quiz = QUIZZES[type as string]
+  const quiz = QUIZZES[type]
 
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])
