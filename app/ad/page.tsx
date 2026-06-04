@@ -1,8 +1,9 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { useState, useEffect } from 'react'
 
-export default function AdPage() {
+function AdContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   useEffect(() => {
@@ -105,5 +106,13 @@ export default function AdPage() {
         )}
       </div>
     </>
+  )
+}
+
+export default function AdPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdContent />
+    </Suspense>
   )
 }
