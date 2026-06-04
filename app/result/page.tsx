@@ -196,7 +196,10 @@ const CAT_SVGS: Record<string, string> = {
 export default function ResultPage() {
   const router = useRouter()
   const [resultText, setResultText] = useState('')
-  const [quizType, setQuizType] = useState<string>('attachment')
+  const [quizType, setQuizType] = useState<string>(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('quiz_type') || 'attachment'
+    return 'attachment'
+  })
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState('')
   const shareCardRef = useRef<HTMLDivElement>(null)
