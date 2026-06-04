@@ -84,7 +84,7 @@ export default function QuizPage() {
         router.push('/result')
       } else {
         localStorage.setItem('last_ad_time', String(now))
-        router.push('/ad')
+        router.push(`/ad?type=${type}`)
       }
     }
   }

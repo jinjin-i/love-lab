@@ -1,9 +1,14 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 export default function AdPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  useEffect(() => {
+    const type = searchParams.get('type')
+    if (type) sessionStorage.setItem('quiz_type', type)
+  }, [])
   const [adClicked, setAdClicked] = useState(false)
   const [countdown, setCountdown] = useState(3)
   const [canSkip, setCanSkip] = useState(false)
