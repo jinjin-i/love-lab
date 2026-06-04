@@ -7,6 +7,12 @@ export default function Home() {
   const router = useRouter()
   const [toast, setToast] = useState('')
 
+  function copyLink() {
+    const url = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
+    navigator.clipboard.writeText(url).then(() => showToast('링크가 복사됐어요! 카톡에 붙여넣기 해보세요 🔮'))
+      .catch(() => showToast('복사에 실패했어요'))
+  }
+
   function showToast(msg: string) {
     setToast(msg)
     setTimeout(() => setToast(''), 2500)
@@ -74,6 +80,24 @@ export default function Home() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* 링크 공유 버튼 */}
+      <div style={{ padding: '0 0 1.25rem' }}>
+        <button
+          onClick={copyLink}
+          style={{
+            width: '100%', height: 48,
+            background: 'rgba(201,168,76,0.1)',
+            border: '1px solid rgba(201,168,76,0.3)',
+            borderRadius: 14, cursor: 'pointer',
+            fontSize: 13.5, color: '#c9a84c',
+            fontFamily: 'inherit', fontWeight: 500,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          }}
+        >
+          🔗 친구에게 링크 보내기
+        </button>
       </div>
 
       {/* 후기 섹션 */}
