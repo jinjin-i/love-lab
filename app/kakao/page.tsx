@@ -162,18 +162,28 @@ export default function KakaoPage() {
             </div>
 
             {/* 쿠팡 광고 배너 */}
-            <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}
-              onClick={() => setAdClicked(true)}>
-              <iframe
-                src="https://coupa.ng/cgTsq3"
-                width="100%"
-                height="120"
-                frameBorder="0"
-                scrolling="no"
-                referrerPolicy="unsafe-url"
-                style={{ display: 'block' }}
-              />
-            </div>
+            
+              href="https://coupa.ng/cgTsq3"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setAdClicked(true)}
+              style={{ display: 'block', textDecoration: 'none' }}
+            >
+              <div style={{
+                borderRadius: 16, overflow: 'hidden',
+                border: '1px solid rgba(255,200,100,0.25)',
+                background: 'linear-gradient(135deg, #1a1410 0%, #2a2010 100%)',
+                padding: '20px 24px',
+                display: 'flex', alignItems: 'center', gap: 16,
+              }}>
+                <div style={{ fontSize: 36 }}>🛍️</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#f0ead8', marginBottom: 4 }}>쿠팡에서 오늘의 추천 상품 보기</div>
+                  <div style={{ fontSize: 12, color: 'rgba(240,234,216,0.5)' }}>클릭하면 분석 버튼이 활성화돼요</div>
+                </div>
+                <div style={{ fontSize: 18, color: 'rgba(201,168,76,0.6)' }}>›</div>
+              </div>
+            </a>
 
             <div style={{ fontSize: 11, color: 'rgba(240,234,216,0.25)', textAlign: 'center' }}>
               이 포스팅은 쿠팡 파트너스 활동의 일환으로 수수료를 제공받습니다
