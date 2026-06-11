@@ -1,13 +1,14 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect, useRef, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Script from 'next/script'
 
 function AdContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [adClicked, setAdClicked] = useState(false)
-  const adRef = useRef<HTMLDivElement>(null)
+  const [scriptLoaded, setScriptLoaded] = useState(false)
 
   useEffect(() => {
     const type = searchParams.get('type')
@@ -15,22 +16,29 @@ function AdContent() {
   }, [])
 
   useEffect(() => {
-    if (!adRef.current) return
-    // 기존 스크립트 제거
-    adRef.current.innerHTML = ''
-    const script1 = document.createElement('script')
-    script1.src = 'https://ads-partners.coupang.com/g.js'
-    script1.async = true
-    script1.onload = () => {
-      const script2 = document.createElement('script')
-      script2.innerHTML = `new PartnersCoupang.G({"id":739808,"trackingCode":"AF6132783","subId":null,"template":"carousel","width":"300","height":"300"});`
-      adRef.current?.appendChild(script2)
+    if (!scriptLoaded) return
+    try {
+      (window as any).PartnersCoupang && new (window as any).PartnersCoupang.G({
+        id: 739808,
+        trackingCode: 'AF6132783',
+        subId: null,
+        template: 'carousel',
+        width: '300',
+        height: '300',
+      })
+    } catch (e) {
+      console.log('coupang widget error:', e)
     }
-    adRef.current.appendChild(script1)
-  }, [])
+  }, [scriptLoaded])
 
   return (
     <>
+      <Script
+        src="https://ads-partners.coupang.com/g.js"
+        strategy="afterInteractive"
+        onLoad={() => setScriptLoaded(true)}
+      />
+
       <div style={{ padding: '20px 24px 0', display: 'flex', alignItems: 'center', gap: 14, position: 'sticky', top: 0, background: '#141428', zIndex: 10 }}>
         <button className="back-btn" onClick={() => router.push('/')}>‹</button>
         <div style={{ flex: 1 }}>
@@ -40,7 +48,6 @@ function AdContent() {
       </div>
 
       <div style={{ flex: 1, padding: '32px 24px 5rem', display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'center' }}>
-
         <div style={{ textAlign: 'center', padding: '8px 0' }}>
           <div style={{ fontSize: 36, marginBottom: 12 }}>🔮</div>
           <div style={{ fontSize: 16, fontWeight: 600, color: '#f0ead8', marginBottom: 8 }}>분석 결과가 준비됐어요</div>
@@ -49,12 +56,16 @@ function AdContent() {
           </div>
         </div>
 
-        {/* 쿠팡 파트너스 위젯 */}
+        {/* 쿠팡 위젯 영역 */}
         <div
-          ref={adRef}
+          id="coupang-ad-widget"
           onClick={() => setAdClicked(true)}
-          style={{ width: 300, minHeight: 300, borderRadius: 16, overflow: 'hidden', cursor: 'pointer' }}
-        />
+          style={{ width: 300, minHeight: 300, borderRadius: 16, overflow: 'hidden', cursor: 'pointer', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {!scriptLoaded && (
+            <div style={{ fontSize: 13, color: 'rgba(240,234,216,0.3)' }}>상품 로딩 중...</div>
+          )}
+        </div>
 
         <div style={{ fontSize: 11, color: 'rgba(240,234,216,0.2)', textAlign: 'center' }}>
           이 포스팅은 쿠팡 파트너스 활동의 일환으로<br />일정액의 수수료를 제공받습니다
