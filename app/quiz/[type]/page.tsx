@@ -74,18 +74,7 @@ export default function QuizPage() {
     } else {
       sessionStorage.setItem('quiz_answers', JSON.stringify(ans))
       sessionStorage.setItem('quiz_type', type)
-      // 24시간 이내 분석 기록 확인
-      const lastAdTime = localStorage.getItem('last_ad_time')
-      const now = Date.now()
-      const twentyFourHours = 24 * 60 * 60 * 1000
-      const skipAd = lastAdTime && (now - parseInt(lastAdTime)) < twentyFourHours
-
-      if (skipAd) {
-        router.push('/result')
-      } else {
-        localStorage.setItem('last_ad_time', String(now))
-        router.push(`/ad?type=${type}`)
-      }
+      router.push(`/ad?type=${type}`)
     }
   }
 
