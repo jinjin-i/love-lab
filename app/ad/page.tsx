@@ -44,7 +44,7 @@ function AdContent() {
           {products.map((p, i) => (
             <a
               key={i}
-              href="https://coupa.ng/cgTsq3"
+              href="https://link.coupang.com/a/euYOaNUDZY"
               target="_blank"
               rel="noreferrer"
               onClick={() => setAdClicked(true)}
