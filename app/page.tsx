@@ -25,6 +25,7 @@ export default function Home() {
     { type: 'ex', icon: '🔮', title: '전 애인 관계 분석', sub: '이별의 진짜 원인과 다음 관계 통찰', paid: true },
     { type: 'crush', icon: '💌', title: '짝사랑 상대 심리 분석', sub: '그 사람 나를 좋아할까?', paid: false },
     { type: 'couple', icon: '💑', title: '커플 관계 진단', sub: '우리 관계 지금 괜찮을까?', paid: false },
+    { type: 'kakao', icon: '💬', title: '카톡 대화 분석', sub: '이 사람 나를 좋아하는 걸까?', paid: false, url: '/kakao' },
   ]
 
   const reviews = [
@@ -60,7 +61,7 @@ export default function Home() {
           {menus.map(m => (
             <button
               key={m.type}
-              onClick={() => router.push(`/quiz/${m.type}`)}
+              onClick={() => router.push((m as any).url || `/quiz/${m.type}`)}
               style={{
                 width: '100%', display: 'flex', alignItems: 'center', gap: 14,
                 padding: '16px 20px',
