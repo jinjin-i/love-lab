@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 export default function KakaoPage() {
   const router = useRouter()
@@ -12,6 +12,7 @@ export default function KakaoPage() {
   const [adClicked, setAdClicked] = useState(false)
   const [usedCount, setUsedCount] = useState(0)
   const [limitReached, setLimitReached] = useState(false)
+  const adRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const today = new Date().toLocaleDateString('ko-KR')
@@ -25,6 +26,20 @@ export default function KakaoPage() {
       localStorage.setItem('kakao_analysis_count', '0')
     }
   }, [])
+
+  useEffect(() => {
+    if (step !== 'ad' || !adRef.current) return
+    adRef.current.innerHTML = ''
+    const script1 = document.createElement('script')
+    script1.src = 'https://ads-partners.coupang.com/g.js'
+    script1.async = true
+    script1.onload = () => {
+      const script2 = document.createElement('script')
+      script2.innerHTML = `new PartnersCoupang.G({"id":739808,"trackingCode":"AF6132783","subId":null,"template":"carousel","width":"300","height":"300"});`
+      adRef.current?.appendChild(script2)
+    }
+    adRef.current.appendChild(script1)
+  }, [step])
 
   function showToast(msg: string) {
     setToast(msg)
@@ -152,29 +167,19 @@ export default function KakaoPage() {
         )}
 
         {step === 'ad' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ textAlign: 'center', padding: '20px 0 8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+            <div style={{ textAlign: 'center', padding: '12px 0 4px' }}>
               <div style={{ fontSize: 15, fontWeight: 600, color: '#f0ead8', marginBottom: 6 }}>분석 준비 완료!</div>
               <div style={{ fontSize: 13, color: 'rgba(240,234,216,0.5)', lineHeight: 1.6 }}>
-                아래 광고를 클릭하면<br />분석 결과를 볼 수 있어요 🔮
+                아래 상품을 둘러보면<br />결과 보기 버튼이 활성화돼요 🔮
               </div>
             </div>
 
-            <a
-              href="https://coupa.ng/cgTsq3"
-              target="_blank"
-              rel="noreferrer"
+            <div
+              ref={adRef}
               onClick={() => setAdClicked(true)}
-              style={{ display: 'block', textDecoration: 'none' }}>
-              <div style={{ borderRadius: 18, border: '1px solid rgba(201,168,76,0.3)', background: 'linear-gradient(135deg, #1e1a10 0%, #2a2210 100%)', padding: '22px 20px', display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div style={{ fontSize: 40 }}>🛍️</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14.5, fontWeight: 600, color: '#f0ead8', marginBottom: 5 }}>쿠팡 오늘의 추천 상품 보기</div>
-                  <div style={{ fontSize: 12, color: 'rgba(240,234,216,0.45)' }}>클릭 후 결과 보기 버튼이 활성화돼요</div>
-                </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#c9a84c', background: 'rgba(201,168,76,0.15)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: 20, padding: '4px 12px' }}>방문하기 →</div>
-              </div>
-            </a>
+              style={{ width: 300, minHeight: 300, borderRadius: 16, overflow: 'hidden', cursor: 'pointer' }}
+            />
 
             <div style={{ fontSize: 11, color: 'rgba(240,234,216,0.2)', textAlign: 'center' }}>
               이 포스팅은 쿠팡 파트너스 활동의 일환으로 수수료를 제공받습니다
@@ -186,11 +191,11 @@ export default function KakaoPage() {
               </button>
             ) : (
               <div style={{ width: '100%', height: 52, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: 'rgba(240,234,216,0.3)' }}>
-                광고를 클릭하면 버튼이 나타납니다
+                상품을 클릭하면 버튼이 나타납니다
               </div>
             )}
 
-            <button onClick={() => setStep('input')} className="btn-ghost" style={{ height: 40, fontSize: 13 }}>
+            <button onClick={() => setStep('input')} className="btn-ghost" style={{ height: 40, fontSize: 13, width: '100%' }}>
               돌아가기
             </button>
           </div>
